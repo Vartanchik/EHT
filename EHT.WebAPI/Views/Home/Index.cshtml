@@ -1,0 +1,175 @@
+﻿@model IList<EHT.BLL.DTOs.NodeDto>
+
+<style>
+    ul, #myUL {
+        list-style-type: none;
+    }
+
+    #myUL {
+        margin: 0;
+        padding: 0;
+    }
+
+    .caret {
+        cursor: pointer;
+        -webkit-user-select: none; /* Safari 3.1+ */
+        -moz-user-select: none; /* Firefox 2+ */
+        -ms-user-select: none; /* IE 10+ */
+        user-select: none;
+    }
+
+        .caret::before {
+            content: "\25B6";
+            color: black;
+            display: inline-block;
+            margin-right: 6px;
+        }
+
+    .caret-down::before {
+        -ms-transform: rotate(90deg); /* IE 9 */
+        -webkit-transform: rotate(90deg); /* Safari */
+        transform: rotate(90deg);
+    }
+
+    .nested {
+        display: none;
+    }
+
+    .active {
+        display: block;
+    }
+</style>
+
+<h2>Tree View</h2>
+<p>A tree view represents a hierarchical view of information, where each item can have a number of subitems.</p>
+<p>Click on the arrow(s) to open or close the tree branches.</p>
+
+
+
+@if (Model.Count > 0)
+{
+    <ul id="myUL">
+
+        @foreach (var organization in Model)
+        {
+            @if (organization.Type == "Organization")
+            {
+                <li>
+                    <span class="caret organization" data-id="@organization.Id">@organization.Name</span>
+                    <ul class="nested">
+                        @foreach (var country in Model)
+                        {
+                            @if (country.ParentId == organization.Id && country.Type == "Country")
+                            {
+                                <li id="country">
+                                    <span class="caret country" data-id="@country.Id">@country.Name</span>
+                                    <ul class="nested">
+                                        @foreach (var business in Model)
+                                        {
+                                            @if (business.ParentId == country.Id && business.Type == "Business")
+                                            {
+                                                <li id="business">
+                                                    <span class="caret business" data-id="@business.Id">@business.Name</span>
+                                                    <ul class="nested">
+                                                        @foreach (var family in Model)
+                                                        {
+                                                            @if (family.ParentId == business.Id && family.Type == "Family")
+                                                            {
+                                                                <li id="family">
+                                                                    <span class="caret family" data-id="@family.Id">@family.Name</span>
+                                                                    <ul class="nested">
+                                                                        @foreach (var offering in Model)
+                                                                        {
+                                                                            @if (offering.ParentId == family.Id && offering.Type == "Offering")
+                                                                            {
+                                                                                <li id="offering">
+                                                                                    <span class="caret offering" data-id="@offering.Id">@offering.Name</span>
+                                                                                    <ul class="nested">
+                                                                                        @foreach (var department in Model)
+                                                                                        {
+                                                                                            @if (department.ParentId == offering.Id && department.Type == "Department")
+                                                                                            {
+                                                                                                <li id="department">
+                                                                                                    <span class="caret department" data-id="@department.Id">@department.Name</span>
+                                                                                                </li>
+
+                                                                                            }
+                                                                                        }
+                                                                                    </ul>
+                                                                                </li>
+
+                                                                            }
+                                                                        }
+                                                                    </ul>
+                                                                </li>
+
+                                                            }
+                                                        }
+                                                    </ul>
+                                                </li>
+
+
+                                            }
+
+                                        }
+                                    </ul>
+                                </li>
+
+                            }
+
+                        }
+                    </ul>
+                </li>
+
+            }
+        }
+    </ul>
+}
+else
+{
+    <p>There are no organizations.</p>
+}
+
+
+
+<script src="http://ajax.microsoft.com/ajax/jquery/jquery-1.4.2.js" type="text/javascript"></script>
+<script>
+    var toggler = document.getElementsByClassName("caret");
+    var i;
+
+    for (i = 0; i < toggler.length; i++) {
+        toggler[i].addEventListener("click", function () {
+            this.parentElement.querySelector(".nested").classList.toggle("active");
+            this.classList.toggle("caret-down");
+        });
+    }
+</script>
+
+
+@*<script>
+    $(document).ready(function () {
+        $('span.organization').bind('click', function () {
+            $.get('/api/organization/' + this.dataset.id, function (data) {
+                $('span.country').empty();
+                $.each(data.countries, function (i, v) {
+                    $('span.country').text(v.name);
+                });
+            }, 'json');
+        });
+        $('#btn').on('click', function () {
+            $.get('/api/movies/' + $('#MovieId').val(), function (data) {
+                $('#result').empty()
+                $('#result').html(data.Title +
+                    '<br />' + data.Genre +
+                    '<br />' + data.ReleaseDate);
+            }, 'json');
+        });
+        $('#btn-delete').on('click', function () {
+            $.ajax({
+                type: 'Delete',
+                url: '/api/movies?id=' + $('#MovieId').val()
+            });
+        });
+    });
+</script>*@
+
