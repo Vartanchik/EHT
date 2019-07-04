@@ -33,7 +33,7 @@ namespace EHT.WebAPI.Controllers
         [ProducesResponseType(204)]
         public async Task<ActionResult<IList<NodeDto>>> Get()
         {
-            var listOfNodes = await _treeService.GetTree();
+            var listOfNodes = await _treeService.GetTreeAsync();
 
             return listOfNodes == null
                 ? (ActionResult)NoContent()
@@ -54,7 +54,7 @@ namespace EHT.WebAPI.Controllers
 
             var nodeDto = _mapper.Map<NodeDto>(model);
 
-            var result = await _treeService.CreateOrUpdateNodeAsync(nodeDto);
+            var result = await _treeService.CreateNodeAsync(nodeDto);
 
             return result.Succeeded
                 ? Ok(new ResponseModel(200, "Completed.", "Node created."))
@@ -75,7 +75,7 @@ namespace EHT.WebAPI.Controllers
 
             var nodeDto = _mapper.Map<NodeDto>(model);
 
-            var result = await _treeService.CreateOrUpdateNodeAsync(nodeDto);
+            var result = await _treeService.UpdateNodeAsync(nodeDto);
 
             return result.Succeeded
                 ? Ok(new ResponseModel(200, "Completed.", "Node updated."))

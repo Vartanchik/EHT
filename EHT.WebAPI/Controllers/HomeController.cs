@@ -17,7 +17,7 @@ namespace EHT.WebAPI.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            var nodeList = await _treeService.GetTree();
+            var nodeList = await _treeService.GetTreeAsync();
 
             return View(nodeList);
         }

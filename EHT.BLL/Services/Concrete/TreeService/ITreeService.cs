@@ -8,8 +8,9 @@ namespace EHT.BLL.Services.Concrete.TreeService
 {
     public interface ITreeService
     {
-        Task<IList<NodeDto>> GetTree();
-        Task<ServiceResult> CreateOrUpdateNodeAsync(NodeDto dto);
+        Task<IList<NodeDto>> GetTreeAsync();
+        Task<ServiceResult> CreateNodeAsync(NodeDto dto);
+        Task<ServiceResult> UpdateNodeAsync(NodeDto dto);
         Task<ServiceResult> DeleteNodeAsync(NodeDto dto);
     }
 }

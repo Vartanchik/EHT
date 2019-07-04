@@ -32,7 +32,7 @@ namespace EHT.BLL.Services
                            config => config.MapFrom(src => new NodePropertiesDto
                            {
                                Code = src.Code,
-                               OrganizationType = src.OrganizationType.ToString(),
+                               OrganizationType = src.OrganizationType,
                                OrganizationOwner = src.Owner
                            }));
 

@@ -22,7 +22,7 @@ namespace EHT.BLL.Services.Concrete.TreeService
             _mapper = mapper;
         }
 
-        public async Task<IList<NodeDto>> GetTree()
+        public async Task<IList<NodeDto>> GetTreeAsync()
         {
             try
             {
@@ -61,7 +61,7 @@ namespace EHT.BLL.Services.Concrete.TreeService
 
         }
 
-        public async Task<ServiceResult> CreateOrUpdateNodeAsync(NodeDto dto)
+        public async Task<ServiceResult> CreateNodeAsync(NodeDto dto)
         {
             try
             {
@@ -69,45 +69,71 @@ namespace EHT.BLL.Services.Concrete.TreeService
                 {
                     case "Organization":
                         var organization = _mapper.Map<Organization>(dto);
-                        await _uow.Organizations.CreateOrUpdate(organization);
-                        await _uow.CommitAsync();
-                        break;
+                        return await CreateOrganizationAsync(organization);
 
                     case "Country":
                         var country = _mapper.Map<Country>(dto);
-                        await _uow.Countries.CreateOrUpdate(country);
-                        await _uow.CommitAsync();
-                        break;
+                        return await CreateCountryAsync(country);
 
                     case "Business":
                         var business = _mapper.Map<Business>(dto);
-                        await _uow.Businesses.CreateOrUpdate(business);
-                        await _uow.CommitAsync();
-                        break;
+                        return await CreateBusinessAsync(business);
 
                     case "Family":
                         var family = _mapper.Map<Family>(dto);
-                        await _uow.Families.CreateOrUpdate(family);
-                        await _uow.CommitAsync();
-                        break;
+                        return await CreateFamilyAsync(family);
 
                     case "Offering":
                         var offering = _mapper.Map<Offering>(dto);
-                        await _uow.Offerings.CreateOrUpdate(offering);
-                        await _uow.CommitAsync();
-                        break;
+                        return await CreateOfferingAsync(offering);
 
                     case "Department":
                         var department = _mapper.Map<Department>(dto);
-                        await _uow.Departments.CreateOrUpdate(department);
-                        await _uow.CommitAsync();
-                        break;
+                        return await CreateDepartmentAsync(department);
 
                     default:
-                        return new ServiceResult("Not found such type as:" + dto.Type);
+                        return new ServiceResult("Not found such type as: " + dto.Type);
                 }
+            }
+            catch (Exception ex)
+            {
+                return new ServiceResult(ex.Message);
+            }
+        }
 
-                return new ServiceResult();
+        public async Task<ServiceResult> UpdateNodeAsync(NodeDto dto)
+        {
+            try
+            {
+                switch (dto.Type)
+                {
+                    case "Organization":
+                        var organization = _mapper.Map<Organization>(dto);
+                        return await UpdateOrganizationAsync(organization);
+
+                    case "Country":
+                        var country = _mapper.Map<Country>(dto);
+                        return await UpdateCountryAsync(country);
+
+                    case "Business":
+                        var business = _mapper.Map<Business>(dto);
+                        return await UpdateBusinessAsync(business);
+
+                    case "Family":
+                        var family = _mapper.Map<Family>(dto);
+                        return await UpdateFamilyAsync(family);
+
+                    case "Offering":
+                        var offering = _mapper.Map<Offering>(dto);
+                        return await UpdateOfferingAsync(offering);
+
+                    case "Department":
+                        var department = _mapper.Map<Department>(dto);
+                        return await UpdateDepartmentAsync(department);
+
+                    default:
+                        return new ServiceResult("Not found such type as: " + dto.Type);
+                }
             }
             catch (Exception ex)
             {
@@ -152,7 +178,7 @@ namespace EHT.BLL.Services.Concrete.TreeService
                         break;
 
                     default:
-                        return new ServiceResult("Not found such type as:" + dto.Type);
+                        return new ServiceResult("Not found such type as: " + dto.Type);
                 }
 
                 return new ServiceResult();
@@ -163,5 +189,237 @@ namespace EHT.BLL.Services.Concrete.TreeService
             }
         }
 
+        private async Task<ServiceResult> CreateOrganizationAsync(Organization organization)
+        {
+            var organizationExist = await _uow.Organizations.AsQueryable()
+                                                            .AnyAsync(o => o.Code == organization.Code);
+
+            if (organizationExist) return new ServiceResult($"Organization with code: {organization.Code} - already exist.");
+            
+            await _uow.Organizations.Create(organization);
+            await _uow.CommitAsync();
+
+            return new ServiceResult();
+
+        }
+
+        private async Task<ServiceResult> CreateCountryAsync(Country country)
+        {
+            var organizationExist = await _uow.Organizations.AsQueryable()
+                                                            .AnyAsync(o => o.Id == country.OrganizationId);
+
+            if (!organizationExist) return new ServiceResult($"Organization with id: {country.OrganizationId} - not found.");
+
+            var countryExist = await _uow.Countries.AsQueryable()
+                                                   .AnyAsync(c => c.Code == country.Code &&
+                                                                  c.OrganizationId == country.OrganizationId);
+
+            if (countryExist) return new ServiceResult($"Country with code: {country.Code} - already exist.");
+            
+            await _uow.Countries.Create(country);
+            await _uow.CommitAsync();
+
+            return new ServiceResult();
+
+        }
+
+        private async Task<ServiceResult> CreateBusinessAsync(Business business)
+        {
+            var countryExist = await _uow.Countries.AsQueryable()
+                                                   .AnyAsync(c => c.Id == business.CountryId);
+
+            if (!countryExist) return new ServiceResult($"Country with id: {business.CountryId} - not found.");
+
+            var businessExist = await _uow.Businesses.AsQueryable()
+                                                     .AnyAsync(b => b.Name == business.Name &&
+                                                                    b.CountryId == business.CountryId);
+
+            if (businessExist) return new ServiceResult($"Business with name: {business.Name} - already exist.");
+            
+            await _uow.Businesses.Create(business);
+            await _uow.CommitAsync();
+
+            return new ServiceResult();
+
+        }
+
+        private async Task<ServiceResult> CreateFamilyAsync(Family family)
+        {
+            var businessExist = await _uow.Businesses.AsQueryable()
+                                                     .AnyAsync(b => b.Id == family.BusinessId);
+
+            if (!businessExist) return new ServiceResult($"Business with id: {family.BusinessId} - not found.");
+
+            var familyExist = await _uow.Families.AsQueryable()
+                                                 .AnyAsync(f => f.Name == family.Name &&
+                                                                f.BusinessId == family.BusinessId);
+
+            if (familyExist) return new ServiceResult($"Family with name: {family.Name} - already exist.");
+            
+            await _uow.Families.Create(family);
+            await _uow.CommitAsync();
+
+            return new ServiceResult();
+
+        }
+
+        private async Task<ServiceResult> CreateOfferingAsync(Offering offering)
+        {
+            var familyExist = await _uow.Families.AsQueryable()
+                                                 .AnyAsync(f => f.Id == offering.FamilyId);
+
+            if (!familyExist) return new ServiceResult($"Family with id: {offering.FamilyId} - not found.");
+
+            var offeringExist = await _uow.Offerings.AsQueryable()
+                                                    .AnyAsync(o => o.Name == offering.Name &&
+                                                                   o.FamilyId == offering.FamilyId);
+
+            if (offeringExist) return new ServiceResult($"Offering with name: {offering.Name} - already exist.");
+            
+            await _uow.Offerings.Create(offering);
+            await _uow.CommitAsync();
+
+            return new ServiceResult();
+
+        }
+
+        private async Task<ServiceResult> CreateDepartmentAsync(Department department)
+        {
+            var offeringExist = await _uow.Offerings.AsQueryable()
+                                                    .AnyAsync(o => o.Id == department.OfferingId);
+
+            if (!offeringExist) return new ServiceResult($"Offering with id: {department.OfferingId} - not found.");
+
+            var departmentExist = await _uow.Departments.AsQueryable()
+                                                        .AnyAsync(d => d.Name == department.Name &&
+                                                                       d.OfferingId == department.OfferingId);
+
+            if (departmentExist) return new ServiceResult($"Department with name: {department.Name} - already exist.");
+            
+            await _uow.Departments.Create(department);
+            await _uow.CommitAsync();
+
+            return new ServiceResult();
+
+        }
+
+        private async Task<ServiceResult> UpdateOrganizationAsync(Organization organization)
+        {
+            var organizationExist = await _uow.Organizations.AsQueryable()
+                                                            .AnyAsync(o => o.Id == organization.Id);
+
+            if (!organizationExist) return new ServiceResult($"Organization with id: {organization.Id} - not found.");
+
+            var organizationCodeOccupied = await _uow.Organizations.AsQueryable()
+                                                                   .AnyAsync(o => o.Code == organization.Code &&
+                                                                                  o.Id != organization.Id);
+
+            if (organizationCodeOccupied) return new ServiceResult($"Organization with code: {organization.Code} - already exist.");
+
+            await _uow.Organizations.Update(organization);
+            await _uow.CommitAsync();
+
+            return new ServiceResult();
+        }
+
+        private async Task<ServiceResult> UpdateCountryAsync(Country country)
+        {
+            var countryExist = await _uow.Countries.AsQueryable()
+                                                   .AnyAsync(c => c.Id == country.Id);
+
+            if (!countryExist) return new ServiceResult($"Country with id: {country.Id} - not found.");
+
+            var countryCodeOccupied = await _uow.Countries.AsQueryable()
+                                                          .AnyAsync(c => c.Code == country.Code &&
+                                                                         c.OrganizationId == country.OrganizationId &&
+                                                                         c.Id != country.Id);
+
+            if (countryCodeOccupied) return new ServiceResult($"Country with code: {country.Code} - already exist.");
+
+            await _uow.Countries.Update(country);
+            await _uow.CommitAsync();
+
+            return new ServiceResult();
+        }
+
+        private async Task<ServiceResult> UpdateBusinessAsync(Business business)
+        {
+            var businessExist = await _uow.Businesses.AsQueryable()
+                                                     .AnyAsync(b => b.Id == business.Id);
+
+            if (!businessExist) return new ServiceResult($"Business with id: {business.Id} - not found.");
+
+            var businessNameOccupied = await _uow.Businesses.AsQueryable()
+                                                            .AnyAsync(b => b.Name == business.Name &&
+                                                                           b.CountryId == business.CountryId &&
+                                                                           b.Id != business.Id);
+
+            if (businessNameOccupied) return new ServiceResult($"Business with name: {business.Name} - already exist.");
+
+            await _uow.Businesses.Update(business);
+            await _uow.CommitAsync();
+
+            return new ServiceResult();
+        }
+
+        private async Task<ServiceResult> UpdateFamilyAsync(Family family)
+        {
+            var familyExist = await _uow.Families.AsQueryable()
+                                                 .AnyAsync(f => f.Id == family.Id);
+
+            if (!familyExist) return new ServiceResult($"Family with id: {family.Id} - not found.");
+
+            var familyNameOccupied = await _uow.Families.AsQueryable()
+                                                        .AnyAsync(f => f.Name == family.Name &&
+                                                                       f.BusinessId == family.BusinessId &&
+                                                                       f.Id != family.Id);
+
+            if (familyNameOccupied) return new ServiceResult($"Family with name: {family.Name} - already exist.");
+
+            await _uow.Families.Update(family);
+            await _uow.CommitAsync();
+
+            return new ServiceResult();
+        }
+
+        private async Task<ServiceResult> UpdateOfferingAsync(Offering offering)
+        {
+            var offeringExist = await _uow.Offerings.AsQueryable()
+                                                    .AnyAsync(o => o.Id == offering.Id);
+
+            if (!offeringExist) return new ServiceResult($"Offering with id: {offering.Id} - not found.");
+
+            var offeringNameOccupied = await _uow.Offerings.AsQueryable()
+                                                           .AnyAsync(o => o.Name == offering.Name &&
+                                                                          o.FamilyId == offering.FamilyId &&
+                                                                          o.Id != offering.Id);
+
+            if (offeringNameOccupied) return new ServiceResult($"Offering with name: {offering.Name} - already exist.");
+
+            await _uow.Offerings.Update(offering);
+            await _uow.CommitAsync();
+
+            return new ServiceResult();
+        }
+
+        private async Task<ServiceResult> UpdateDepartmentAsync(Department department)
+        {
+            var departmentExist = await _uow.Departments.AsQueryable()
+                                                        .AnyAsync(d => d.Id == department.Id);
+
+            if (!departmentExist) return new ServiceResult($"Department with id: {department.Id} - not found.");
+
+            var departmentNameOccupied = await _uow.Departments.AsQueryable()
+                                                               .AnyAsync(d => d.Name == department.Name &&
+                                                                              d.OfferingId == department.OfferingId &&
+                                                                              d.Id != department.Id);
+
+            if (departmentNameOccupied) return new ServiceResult($"Department with name: {department.Name} - already exist.");
+
+            await _uow.Departments.Update(department);
+            await _uow.CommitAsync();
+
+            return new ServiceResult();
+        }
     }
 }
