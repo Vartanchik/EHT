@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using EHT.BLL.DTOs;
-using EHT.BLL.Services.Concrete.OrganizationService;
 using EHT.BLL.Services.Concrete.TreeService;
 using EHT.WebAPI.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EHT.WebAPI.Controllers

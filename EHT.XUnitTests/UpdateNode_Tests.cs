@@ -6,6 +6,7 @@ using EHT.DAL;
 using EHT.DAL.Entities;
 using EHT.DAL.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -28,7 +29,9 @@ namespace EHT.XUnitTests
 
             var mapper = new Mapper(mapperConfig);
 
-            return new TreeService(new UnitOfWork(context), mapper);
+            var logger = new Logger<TreeService>(new LoggerFactory());
+
+            return new TreeService(new UnitOfWork(context), mapper, logger);
         }
 
         [Fact]

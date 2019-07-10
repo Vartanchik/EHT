@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EHT.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190627110935_initial")]
-    partial class initial
+    [Migration("20190710174225_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -151,7 +151,7 @@ namespace EHT.DAL.Migrations
                     b.ToTable("Organizations");
                 });
 
-            modelBuilder.Entity("EHT.DAL.Entities.User", b =>
+            modelBuilder.Entity("EHT.DAL.Entities.User.AppUser", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -365,7 +365,7 @@ namespace EHT.DAL.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
                 {
-                    b.HasOne("EHT.DAL.Entities.User")
+                    b.HasOne("EHT.DAL.Entities.User.AppUser")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -373,7 +373,7 @@ namespace EHT.DAL.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
                 {
-                    b.HasOne("EHT.DAL.Entities.User")
+                    b.HasOne("EHT.DAL.Entities.User.AppUser")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -386,7 +386,7 @@ namespace EHT.DAL.Migrations
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("EHT.DAL.Entities.User")
+                    b.HasOne("EHT.DAL.Entities.User.AppUser")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -394,7 +394,7 @@ namespace EHT.DAL.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
                 {
-                    b.HasOne("EHT.DAL.Entities.User")
+                    b.HasOne("EHT.DAL.Entities.User.AppUser")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);

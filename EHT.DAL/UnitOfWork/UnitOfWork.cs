@@ -1,4 +1,5 @@
 ﻿using EHT.DAL.Entities;
+using EHT.DAL.Entities.User;
 using EHT.DAL.Repositories.GenericRepository;
 using System;
 using System.Threading.Tasks;
@@ -8,7 +9,7 @@ namespace EHT.DAL.UnitOfWork
     public class UnitOfWork : IUnitOfWork
     {
         private readonly ApplicationDbContext _context;
-        private IRepository<User> _users;
+        private IRepository<AppUser> _appUsers;
         private IRepository<Organization> _organizations;
         private IRepository<Country> _countries;
         private IRepository<Business> _businesses;
@@ -22,7 +23,7 @@ namespace EHT.DAL.UnitOfWork
             _context = context;
         }
 
-        public IRepository<User> Users => _users ?? (_users = new RepositoryBase<User>(_context));
+        public IRepository<AppUser> AppUsers => _appUsers ?? (_appUsers = new RepositoryBase<AppUser>(_context));
         public IRepository<Organization> Organizations => _organizations ?? (_organizations = new RepositoryBase<Organization>(_context));
         public IRepository<Country> Countries => _countries ?? (_countries = new RepositoryBase<Country>(_context));
         public IRepository<Business> Businesses => _businesses ?? (_businesses = new RepositoryBase<Business>(_context));

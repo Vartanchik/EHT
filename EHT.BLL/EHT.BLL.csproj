@@ -5,6 +5,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Services\Concrete\FamilyService\**" />
+    <Compile Remove="Services\Concrete\OfferingService\**" />
+    <EmbeddedResource Remove="Services\Concrete\FamilyService\**" />
+    <EmbeddedResource Remove="Services\Concrete\OfferingService\**" />
+    <None Remove="Services\Concrete\FamilyService\**" />
+    <None Remove="Services\Concrete\OfferingService\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\EHT.DAL\EHT.DAL.csproj" />
   </ItemGroup>
 
@@ -13,8 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Services\Concrete\FamilyService\" />
-    <Folder Include="Services\Concrete\OfferingService\" />
     <Folder Include="Services\Concrete\UserService\" />
   </ItemGroup>
 

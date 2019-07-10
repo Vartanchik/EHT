@@ -3,10 +3,9 @@ using EHT.BLL.DTOs;
 using EHT.DAL.Entities;
 using EHT.DAL.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace EHT.BLL.Services.Concrete.TreeService
@@ -15,11 +14,13 @@ namespace EHT.BLL.Services.Concrete.TreeService
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _uow;
+        private readonly ILogger<TreeService> _logger;
 
-        public TreeService(IUnitOfWork unitOfWork, IMapper mapper)
+        public TreeService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<TreeService> logger)
         {
             _uow = unitOfWork;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public async Task<IList<NodeDto>> GetTreeAsync()
@@ -56,6 +57,8 @@ namespace EHT.BLL.Services.Concrete.TreeService
             }
             catch (Exception ex)
             {
+                _logger.LogError($"{this.ToString()} - error message:{ex.Message}");
+
                 return null;
             }
 
@@ -97,6 +100,8 @@ namespace EHT.BLL.Services.Concrete.TreeService
             }
             catch (Exception ex)
             {
+                _logger.LogError($"{this.ToString()} - error message:{ex.Message}");
+
                 return new ServiceResult(ex.Message);
             }
         }
@@ -137,6 +142,8 @@ namespace EHT.BLL.Services.Concrete.TreeService
             }
             catch (Exception ex)
             {
+                _logger.LogError($"{this.ToString()} - error message:{ex.Message}");
+
                 return new ServiceResult(ex.Message);
             }
         }
@@ -185,6 +192,8 @@ namespace EHT.BLL.Services.Concrete.TreeService
             }
             catch (Exception ex)
             {
+                _logger.LogError($"{this.ToString()} - error message:{ex.Message}");
+
                 return new ServiceResult(ex.Message);
             }
         }

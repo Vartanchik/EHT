@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using EHT.BLL.DTOs;
 using EHT.DAL.Entities;
+using EHT.DAL.Entities.User;
 
 namespace EHT.BLL.Services
 {
@@ -8,20 +9,8 @@ namespace EHT.BLL.Services
     {
         public DtoMapProfile()
         {
-            CreateMap<User, UserDto>();
-            CreateMap<UserDto, User>();
-            CreateMap<Organization, OrganizationDto>();
-            CreateMap<OrganizationDto, Organization>();
-            CreateMap<Country, CountryDto>();
-            CreateMap<CountryDto, Country>();
-            CreateMap<Business, BusinessDto>();
-            CreateMap<BusinessDto, Business>();
-            CreateMap<Family, FamilyDto>();
-            CreateMap<FamilyDto, Family>();
-            CreateMap<Offering, OfferingDto>();
-            CreateMap<OfferingDto, Offering>();
-            CreateMap<Department, DepartmentDto>();
-            CreateMap<DepartmentDto, Department>();
+            CreateMap<AppUser, UserDto>();
+            CreateMap<UserDto, AppUser>();
 
             CreateMap<Organization, NodeDto>()
                 .ForMember(dest => dest.Type,

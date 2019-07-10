@@ -16,6 +16,5 @@
             Message = message;
             Info = info;
         }
-
     }
 }

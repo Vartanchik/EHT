@@ -149,7 +149,7 @@ namespace EHT.DAL.Migrations
                     b.ToTable("Organizations");
                 });
 
-            modelBuilder.Entity("EHT.DAL.Entities.User", b =>
+            modelBuilder.Entity("EHT.DAL.Entities.User.AppUser", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -363,7 +363,7 @@ namespace EHT.DAL.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
                 {
-                    b.HasOne("EHT.DAL.Entities.User")
+                    b.HasOne("EHT.DAL.Entities.User.AppUser")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -371,7 +371,7 @@ namespace EHT.DAL.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
                 {
-                    b.HasOne("EHT.DAL.Entities.User")
+                    b.HasOne("EHT.DAL.Entities.User.AppUser")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -384,7 +384,7 @@ namespace EHT.DAL.Migrations
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("EHT.DAL.Entities.User")
+                    b.HasOne("EHT.DAL.Entities.User.AppUser")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -392,7 +392,7 @@ namespace EHT.DAL.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
                 {
-                    b.HasOne("EHT.DAL.Entities.User")
+                    b.HasOne("EHT.DAL.Entities.User.AppUser")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
