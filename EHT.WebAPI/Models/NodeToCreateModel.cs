@@ -8,7 +8,7 @@ namespace EHT.WebAPI.Models
         [Required]
         public string Name { get; set; }
         [Required]
-        public string Type { get; set; }
+        public NodeType Type { get; set; }
         public NodePropertiesDto Properties { get; set; }
         [Required]
         public int ParentId { get; set; }

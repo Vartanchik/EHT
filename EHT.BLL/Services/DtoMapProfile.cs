@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using EHT.BLL.DTOs;
 using EHT.DAL.Entities;
-using EHT.DAL.Entities.User;
+using EHT.DAL.Entities.AppUser;
 
 namespace EHT.BLL.Services
 {
@@ -9,8 +9,13 @@ namespace EHT.BLL.Services
     {
         public DtoMapProfile()
         {
-            CreateMap<AppUser, UserDto>();
-            CreateMap<UserDto, AppUser>();
+            CreateMap<AppUser, AppUserDto>()
+                .ForMember(dest => dest.Name,
+                           config => config.MapFrom(src => src.UserName));
+
+            CreateMap<AppUserDto, AppUser>()
+                .ForMember(dest => dest.UserName,
+                           config => config.MapFrom(src => src.Name));
 
             CreateMap<Organization, NodeDto>()
                 .ForMember(dest => dest.Type,

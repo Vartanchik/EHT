@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace EHT.DAL.Entities.User
+namespace EHT.DAL.Entities.AppUser
 {
     public class AppUser : IdentityUser<int>, IEntity
     {

@@ -7,6 +7,6 @@ namespace EHT.WebAPI.Models
         [Required]
         public int Id { get; set; }
         [Required]
-        public string Type { get; set; }
+        public NodeType Type { get; set; }
     }
 }

@@ -1,6 +1,8 @@
 ﻿using EHT.DAL.Entities;
-using EHT.DAL.Entities.User;
+using EHT.DAL.Entities.AppUser;
+using EHT.DAL.Repositories.ConcreteRepositories.AppUserRepository;
 using EHT.DAL.Repositories.GenericRepository;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Threading.Tasks;
 
@@ -9,7 +11,8 @@ namespace EHT.DAL.UnitOfWork
     public class UnitOfWork : IUnitOfWork
     {
         private readonly ApplicationDbContext _context;
-        private IRepository<AppUser> _appUsers;
+        private readonly UserManager<AppUser> _userManager;
+        private IAppUserRepository<AppUser> _appUsers;
         private IRepository<Organization> _organizations;
         private IRepository<Country> _countries;
         private IRepository<Business> _businesses;
@@ -18,12 +21,13 @@ namespace EHT.DAL.UnitOfWork
         private IRepository<Department> _departments;
         private bool _disposed = false;
 
-        public UnitOfWork(ApplicationDbContext context)
+        public UnitOfWork(ApplicationDbContext context, UserManager<AppUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
-        public IRepository<AppUser> AppUsers => _appUsers ?? (_appUsers = new RepositoryBase<AppUser>(_context));
+        public IAppUserRepository<AppUser> AppUsers => _appUsers ?? (_appUsers = new AppUserRepository(_context, _userManager));
         public IRepository<Organization> Organizations => _organizations ?? (_organizations = new RepositoryBase<Organization>(_context));
         public IRepository<Country> Countries => _countries ?? (_countries = new RepositoryBase<Country>(_context));
         public IRepository<Business> Businesses => _businesses ?? (_businesses = new RepositoryBase<Business>(_context));

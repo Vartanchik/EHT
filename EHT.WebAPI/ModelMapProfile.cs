@@ -11,6 +11,7 @@ namespace EHT.WebAPI
             CreateMap<NodeToCreateModel, NodeDto>();
             CreateMap<NodeToUpdateModel, NodeDto>();
             CreateMap<NodeToDeleteModel, NodeDto>();
+            CreateMap<RegisterModel, AppUserDto>();
         }
     }
 }

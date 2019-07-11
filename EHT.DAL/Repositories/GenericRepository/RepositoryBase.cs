@@ -16,18 +16,6 @@ namespace EHT.DAL.Repositories.GenericRepository
             _dbSet = context.Set<TEntity>();
         }
 
-        public virtual async Task CreateOrUpdate(TEntity entity)
-        {
-            if (entity.Id == 0)
-                await _dbSet.AddAsync(entity);
-            else
-            {
-                var entityToUpdate = await _dbSet.FindAsync(entity.Id);
-                var attachedEntry = _context.Entry(entityToUpdate);
-                attachedEntry.CurrentValues.SetValues(entity);
-            }
-        }
-
         public virtual async Task Create(TEntity entity)
         {
             await _dbSet.AddAsync(entity);

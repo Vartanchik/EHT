@@ -6,7 +6,6 @@ namespace EHT.DAL.Repositories.GenericRepository
 {
     public interface IRepository<TEntity> where TEntity : class, IEntity
     {
-        Task CreateOrUpdate(TEntity entity);
         Task Create(TEntity entity);
         Task Update(TEntity entity);
         Task DeleteAsync(int id);

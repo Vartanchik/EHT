@@ -31,7 +31,7 @@ namespace EHT.XUnitTests
 
             var logger = new Logger<TreeService>(new LoggerFactory());
 
-            return new TreeService(new UnitOfWork(context), mapper, logger);
+            return new TreeService(new UnitOfWork(context, null), mapper, logger);
         }
 
         [Fact]

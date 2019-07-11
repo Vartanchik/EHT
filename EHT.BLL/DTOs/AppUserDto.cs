@@ -1,6 +1,6 @@
 ﻿namespace EHT.BLL.DTOs
 {
-    public class UserDto
+    public class AppUserDto
     {
         public int Id { get; set; }
         public string Name { get; set; }
