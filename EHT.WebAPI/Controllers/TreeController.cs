@@ -4,6 +4,7 @@ using AutoMapper;
 using EHT.BLL.DTOs;
 using EHT.BLL.Services.Concrete.TreeService;
 using EHT.WebAPI.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,7 +23,7 @@ namespace EHT.WebAPI.Controllers
             _treeService = treeService;
             _mapper = mapper;
         }
-
+        
         [HttpGet]
         [AllowAnonymous]
         [ProducesResponseType(typeof(IList<NodeDto>), 200)]
@@ -38,7 +39,7 @@ namespace EHT.WebAPI.Controllers
 
         [Route("CreateNode")]
         [HttpPost]
-        //[Authorize(Policy = "RequireLoggedIn")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [ProducesResponseType(typeof(ResponseModel), 200)]
         [ProducesResponseType(typeof(ResponseModel), 400)]
         public async Task<ActionResult> CreateNode([FromBody] NodeToCreateModel model)
@@ -59,7 +60,7 @@ namespace EHT.WebAPI.Controllers
 
         [Route("UpdateNode")]
         [HttpPut]
-        //[Authorize(Policy = "RequireLoggedIn")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [ProducesResponseType(typeof(ResponseModel), 200)]
         [ProducesResponseType(typeof(ResponseModel), 400)]
         public async Task<ActionResult> UpdateNode([FromBody] NodeToUpdateModel model)
@@ -80,7 +81,7 @@ namespace EHT.WebAPI.Controllers
 
         [Route("DeleteNode")]
         [HttpDelete]
-        //[Authorize(Policy = "RequireLoggedIn")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [ProducesResponseType(typeof(ResponseModel), 200)]
         [ProducesResponseType(typeof(ResponseModel), 400)]
         public async Task<ActionResult> DeleteNode([FromBody] NodeToDeleteModel model)

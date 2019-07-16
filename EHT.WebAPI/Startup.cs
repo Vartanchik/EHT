@@ -25,6 +25,11 @@ using Serilog;
 using Serilog.Events;
 using EHT.DAL.Entities.AppUser;
 using EHT.BLL.Services.Concrete.AppUserService;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.AspNetCore.Http;
 
 namespace EHT.WebAPI
 {
@@ -78,6 +83,24 @@ namespace EHT.WebAPI
             services.AddMvc()
                     .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
+            services.AddAuthentication(options =>
+                    {
+                        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                        options.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
+                    })
+                    .AddJwtBearer(options =>
+                    {
+                        options.RequireHttpsMetadata = false;
+                        options.SaveToken = true;
+                        options.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            ValidateIssuer = false,
+                            ValidateAudience = false,
+                            ValidateIssuerSigningKey = true,
+                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+                        };
+                    });
+
             services.AddAutoMapper();
 
             // Register the Swagger generator, defining 1 or more Swagger documents
@@ -96,6 +119,11 @@ namespace EHT.WebAPI
                 c.IncludeXmlComments(xmlPath);
                 c.DescribeAllEnumsAsStrings();
 
+                var security = new Dictionary<string, IEnumerable<string>>
+                {
+                    {"Bearer", new string[] { }},
+                };
+
                 c.AddSecurityDefinition("Bearer", new ApiKeyScheme
                 {
                     Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
@@ -104,12 +132,13 @@ namespace EHT.WebAPI
                     Type = "apiKey"
                 });
 
+                c.AddSecurityRequirement(security);
+
             });
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ITreeService, TreeService>();
             services.AddScoped<IAppUserService, AppUserService>();
-
 
         }
 
@@ -142,7 +171,7 @@ namespace EHT.WebAPI
             app.UseHttpsRedirection();
 
             app.UseAuthentication();
-
+            //app.UseGoogleAuthentication();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

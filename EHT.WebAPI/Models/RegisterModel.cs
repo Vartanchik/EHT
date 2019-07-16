@@ -4,6 +4,7 @@ namespace EHT.WebAPI.Models
 {
     public class RegisterModel
     {
+        [Required]
         [Display(Name = "Name")]
         public string Name { get; set; }
 

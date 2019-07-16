@@ -21,5 +21,13 @@ namespace EHT.DAL.Repositories.ConcreteRepositories.AppUserRepository
         {
             return await _userManager.CreateAsync(appUser, password);
         }
+
+        public async Task<bool> CheckPasswordAsync(int userId, string password)
+        {
+            var appUser = await _userManager.FindByIdAsync(userId.ToString());
+
+            return await _userManager.CheckPasswordAsync(appUser, password);
+        }
+
     }
 }

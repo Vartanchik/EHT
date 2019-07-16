@@ -6,6 +6,7 @@ using EHT.WebAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace EHT.WebAPI.Controllers
 {
@@ -16,42 +17,14 @@ namespace EHT.WebAPI.Controllers
     {
         private readonly IAppUserService _appUserService;
         private readonly IMapper _mapper;
+        private readonly IConfiguration _configuration;
 
-        public AccountController(IAppUserService appUserService, IMapper mapper)
+        public AccountController(IAppUserService appUserService, IMapper mapper, IConfiguration configuration)
         {
             _appUserService = appUserService;
             _mapper = mapper;
+            _configuration = configuration;
         }
-
-        //[HttpGet]
-        //[AllowAnonymous]
-        //public async Task<IActionResult> Login(string returnUrl = null)
-        //{
-        //    return null;
-        //}
-
-        //[HttpPost]
-        //[AllowAnonymous]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Login(LoginModel model, string returnUrl = null)
-        //{
-        //    return null;
-        //}
-
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Logout()
-        //{
-        //    return null;
-        //}
-
-        //[HttpGet]
-        //[AllowAnonymous]
-        //[ValidateAntiForgeryToken]
-        //public IActionResult Register(string returnUrl = null)
-        //{
-        //    return null;
-        //}
 
         [Route("Register")]
         [HttpPost]
@@ -71,5 +44,35 @@ namespace EHT.WebAPI.Controllers
                 ? Ok(new ResponseModel(200, "Completed.", "User created."))
                 : (ActionResult)BadRequest(new ResponseModel(400, "Failed.", result.Error));
         }
+
+        [Route("Login")]
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> Login([FromBody] LoginModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new ResponseModel(400, "Invalid value was entered! Please, redisplay form."));
+            }
+
+            var userId = await _appUserService.GetUserIdAsync(model.Email);
+
+            if (userId < 1)
+            {
+                return BadRequest(new ResponseModel(400, "Failed", "User not found."));
+            }
+
+            var passwordIsRight = await _appUserService.CheckPasswordAsync(userId, model.Password);
+
+            if (!passwordIsRight)
+            {
+                return BadRequest(new ResponseModel(400, "Failed", "Wrong password."));
+            }
+
+            var token = _appUserService.GenerateToken(userId, _configuration["Jwt:Key"], _configuration["Jwt:ExpireTime"]);
+
+            return Ok(new { Token = token });
+        }
+
     }
 }
